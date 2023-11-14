@@ -1,0 +1,383 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Design for the NavBar */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #222;
+  color: #fff;
+}
+
+.navigation {
+  display: flex;
+  justify-content: center;
+}
+
+.navigation ul {
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.navigation li {
+  font-size: 18px;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #222;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.company-name {
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "Clash Display";
+  width: 180px;
+  height: 24px;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 24px;
+  color: #fff;
+}
+
+.wallet-address {
+  /* font-size: 14px; */
+  border: 2px solid #333;
+  border-radius: 50px;
+  padding: 5px 10px;
+  /* width: 118px;
+  height: 21px; */
+  font-family: "DM Sans";
+  font-style: normal;
+  /* font-weight: 500;
+  line-height: 21px; */
+  color: #76808a;
+  flex: none;
+  /* order: 0;
+  flex-grow: 0; */
+  cursor: pointer;
+  color: #007bff;
+  fontSize: 2px;
+  overflow: hidden;
+  textOverflow: ellipsis;
+  whiteSpace: nowrap;
+  /* width: 400px; */
+}
+
+/* Updated styles for li elements */
+.navigation li {
+  color: #fff;
+  position: relative;
+}
+
+.navigation li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.navigation li:hover {
+  color: #fff;
+}
+
+.navigation li::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #ff0000;
+  transition: width 0.3s ease;
+}
+
+.navigation li:hover::after {
+  width: 100%;
+}
+
+
+/* END NAVBAR */
+
+/* NFT Page*/
+.container {
+  background: #000000;
+  color: #ffffff;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.header {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+}
+
+.walletButton {
+  background: #ffffff;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.content {
+  margin-top: 60px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.button {
+  background: #ffffff;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  margin: 0 12px;
+  cursor: pointer;
+}
+
+.containers {
+  background: #222;
+  color: #fff;
+  width: 100vw;
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.sectionTitle {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.carouselContainer {
+  width: 100%;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+.carousel {
+  display: flex;
+}
+
+.carouselItem {
+  margin: 10px;
+}
+
+.nftBox {
+  background: #333;
+  color: #fff;
+  width: 200px;
+  height: 350px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s ease;
+}
+
+.nftImage {
+  width: 80%;
+  height: auto;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.unclickableTab {
+  background: #666;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.mintButton {
+  background: #fff;
+  color: #222;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.nftBoxHighlighted {
+  transform: translateY(-5px);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.infoLabel {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.infoValue {
+  font-size: 16px;
+  margin-left: 5px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+/* END NFT Page */
+
+/* Staking Design */
+.dark-page {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  height: 77vh;
+  background-color: #222;
+}
+
+.column {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bigger-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.nested-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 100px;
+  background-color: #555;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  animation: glowing-border 2s infinite ease-in-out;
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  background-color: #333;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  animation: glowing-border 2s infinite ease-in-out;
+}
+
+@keyframes glowing-border {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  }
+}
+
+.heading {
+  font-family: Arial, sans-serif;
+  color: #fff;
+  font-size: 18px;
+  margin-bottom: 8px;
+  margin-top: 3px;
+}
+
+.address-tab,
+.ratio-tab {
+  padding: 8px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #444;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #ff9068;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+button:hover {
+  background-color: #ff7550;
+}
+
+button.stake-button {
+  margin-bottom: 15px;
+}
+
+/* END */
