@@ -1,5 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-only
-// Author:- @sauravrao637
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -7,65 +6,50 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract CamoNFT is ERC721, Ownable {
     enum RarityLevel {Common, Uncommon, Rare, Epic, Legendary}
-    uint256 counter = 0;
+
     struct NFT {
         uint256 tokenId;
-        address owner;
         RarityLevel rarity;
-        uint256 entryTimestamp;
-        uint256 stakeClaimedTimeStamp;
+        uint256 mintTimestamp;
     }
 
-    uint256 constant public BASE_PRICE = 100_000_000_000_000_000 wei;
-    uint256 constant public COMMON_PRICE = BASE_PRICE *1;
-    uint256 constant public UNCOMMON_PRICE = BASE_PRICE *2;
-    uint256 constant public RARE_PRICE = BASE_PRICE *3;
-    uint256 constant public EPIC_PRICE = BASE_PRICE *5;
-    uint256 constant public LEGENDARY_PRICE = BASE_PRICE *8;
-
-    uint256 constant public COMMON_CAP = 22500;
-    uint256 constant public UNCOMMON_CAP = 2500;
-    uint256 constant public RARE_CAP = 900;
-    uint256 constant public EPIC_CAP = 100;
-    uint256 constant public LEGENDARY_CAP = 25;
-
+    uint256 private _tokenIdCounter = 0;
     mapping(uint256 => NFT) public nfts;
-    mapping(address => uint256[]) private _ownedTokens;
+    mapping(RarityLevel => uint256) public rarityCounts;
+    mapping(RarityLevel => uint256) public rarityCaps;
+    mapping(RarityLevel => uint256) public rarityPrices;
 
-    address public authorizedContract;
+    event NFTMinted(address to, uint256 tokenId, RarityLevel rarity);
 
-    uint256 public commonCount;
-    uint256 public uncommonCount;
-    uint256 public rareCount;
-    uint256 public epicCount;
-    uint256 public legendaryCount;
+    constructor() ERC721("CamoNFT", "CNFT") {
+        rarityCaps[RarityLevel.Common] = 22500;
+        rarityCaps[RarityLevel.Uncommon] = 2500;
+        rarityCaps[RarityLevel.Rare] = 900;
+        rarityCaps[RarityLevel.Epic] = 100;
+        rarityCaps[RarityLevel.Legendary] = 25;
 
-    constructor(address _authorizedContract) ERC721("CamoNFT", "CNFT") {
-        authorizedContract = _authorizedContract;
+        rarityPrices[RarityLevel.Common] = 0.1 ether;
+        rarityPrices[RarityLevel.Uncommon] = 0.2 ether;
+        rarityPrices[RarityLevel.Rare] = 0.3 ether;
+        rarityPrices[RarityLevel.Epic] = 0.5 ether;
+        rarityPrices[RarityLevel.Legendary] = 0.8 ether;
     }
 
-    modifier onlyAuthorizedContract() {
-        require(authorizedContract == msg.sender, "Unauthorized contract");
-        _;
-    }
+    function mintNFT(RarityLevel rarity) public payable {
+        require(rarityCounts[rarity] < rarityCaps[rarity], "Rarity cap reached");
+        require(msg.value >= rarityPrices[rarity], "Insufficient payment");
 
-    function mintNFT(RarityLevel rarity) external payable {
-        require(rarity >= RarityLevel.Common && rarity <= RarityLevel.Legendary, "Invalid rarity level");
-
-        uint256 price = getPrice(rarity);
-        require(msg.value >= price, "Insufficient payment");
-
-        require(getCount(rarity) < getCap(rarity), "Rarity level sold out");
-        uint256 tokenId = counter;
-        counter++;
+        uint256 tokenId = _tokenIdCounter++;
         _safeMint(msg.sender, tokenId);
-        _ownedTokens[msg.sender].push(tokenId);
-        nfts[tokenId] = NFT(tokenId, msg.sender, rarity, block.timestamp, block.timestamp);
-        updateCount(rarity);
 
-        if (msg.value > price) {
-            payable(msg.sender).transfer(msg.value - price);
+        nfts[tokenId] = NFT(tokenId, rarity, block.timestamp);
+        rarityCounts[rarity]++;
+
+        if (msg.value > rarityPrices[rarity]) {
+            payable(msg.sender).transfer(msg.value - rarityPrices[rarity]);
         }
+
+        emit NFTMinted(msg.sender, tokenId, rarity);
     }
 
     function transferFrom(address from, address to, uint256 tokenId) public override {

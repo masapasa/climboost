@@ -12,9 +12,8 @@ contract CamoStaking is Ownable {
     }
 
     uint256 public leftSupply;
-
-    mapping(address => Staker) stakers;
-    address[] stakingAddress;
+    mapping(address => Staker) public stakers;
+    address[] public stakingAddress;
 
     uint256 public tier1Rate;
     uint256 public tier2Rate;
@@ -22,22 +21,22 @@ contract CamoStaking is Ownable {
     uint256 public tier4Rate;
     uint256 public tier5Rate;
 
-    CamoToken public camoTokenAddress;
+    CamoToken public camoToken;
+    CamoNFT public camoNFT;
 
-    CamoNFT public camoNFTAddress;
+    event Staked(address indexed user);
+    event RewardWithdrawn(address indexed user, uint256 amount);
+    event IncentivesDistributed(uint256 totalDistributed);
 
-    address private serverAddress;
-
-    event StakedWallet(address indexed user);
-
-    event WithdrawnRewards(address indexed user, uint256 amount);
-
-    constructor(uint256 baseRewardRate) {
+    constructor(CamoToken _camoToken, CamoNFT _camoNFT, uint256 baseRewardRate) {
+        camoToken = _camoToken;
+        camoNFT = _camoNFT;
         tier1Rate = baseRewardRate;
         tier2Rate = tier1Rate * 2;
         tier3Rate = tier1Rate * 3;
         tier4Rate = tier1Rate * 5;
         tier5Rate = tier1Rate * 8;
+        leftSupply = camoToken.MAX_SUPPLY();
     }
 
     modifier onlyStaker() {
@@ -74,20 +73,20 @@ contract CamoStaking is Ownable {
         return (leftSupply * 10**18) / camoTokenAddress.MAX_SUPPLY();
     }
 
-    function stakeWallet() public {
-        require(stakers[msg.sender].userJoinedTS == 0, "Already Staked");
+    function stake() external {
+        require(stakers[msg.sender].userJoinedTS == 0, "Already staked");
         stakers[msg.sender] = Staker(block.timestamp, 0);
         stakingAddress.push(msg.sender);
-        emit StakedWallet(msg.sender);
+        emit Staked(msg.sender);
     }
 
-    function claimReward() public onlyStaker {
+    function withdrawReward() external {
         uint256 reward = stakers[msg.sender].reward;
-        camoTokenAddress.transfer(msg.sender, reward);
-        stakers[msg.sender].reward -= reward;
-    }
-
-    function getNftById(uint256 tokenId)
+        require(reward > 0, "No rewards");
+        camoToken.transfer(msg.sender, reward);
+        stakers[msg.sender].reward = 0;
+        emit RewardWithdrawn(msg.sender, reward);
+        function getNftById(uint256 tokenId)
         internal
         view
         returns (
@@ -125,13 +124,15 @@ contract CamoStaking is Ownable {
         uint256 total = 0;
         uint256 currSupplyRatio = getSupplyRatio();
         for (uint256 i = 0; i < stakingAddress.length; i++) {
-            address _user = stakingAddress[i];
-            uint256 reward = (currSupplyRatio * calculateIncentive(_user))/ 10**18;
-            camoNFTAddress.updateTimestamp(_user);
-            stakers[_user].reward += reward;
-            total += reward;
+            address user = stakingAddress[i];
+            uint256 reward = calculateReward(user);
+            if (reward > 0) {
+                stakers[user].reward += reward;
+                totalDistributed += reward;
+            }
         }
-        leftSupply -= total;
+        leftSupply -= totalDistributed;
+        emit IncentivesDistributed(totalDistributed);
     }
 
     function getRate(CamoNFT.RarityLevel rarity) public view returns (uint256) {
